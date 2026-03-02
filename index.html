@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+:root{
+  --bg-1:#f4f8ff;
+  --bg-2:#e9f1ff;
+  --panel:#ffffff;
+  --ink:#0f223a;
+  --muted:#556981;
+  --line:#c9d8eb;
+  --accent:#1e6fd9;
+  --accent-soft:#e4efff;
+  --shadow:0 8px 20px rgba(22,56,94,.14);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:"DM Sans","Segoe UI",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 0%, #d5e6ff 0%, transparent 35%),
+    radial-gradient(circle at 90% 90%, #dfe9ff 0%, transparent 30%),
+    linear-gradient(125deg,var(--bg-1),var(--bg-2));
+}
+
+.page{
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+/* ===== HERO ===== */
+
+.hero{
+  background:linear-gradient(145deg,#ffffff,#eef5ff);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:12px 18px;
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.hero-title{
+  margin:0;
+  color:var(--accent);
+  font-size:26px;
+  font-weight:800;
+}
+
+/* ===== CONTROLS ===== */
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.nav-btn{
+  border:1px solid var(--line);
+  background:#f4f8ff;
+  color:#123a67;
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.nav-btn:hover{
+  background:#e7f0ff;
+}
+
+.jump-select{
+  border:1px solid var(--line);
+  background:white;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:600;
+}
+
+/* ===== SLIDER ===== */
+
+.viewer{
+  margin-top:12px;
+  flex:1;
+  overflow:hidden;
+  position:relative;
+}
+
+.slider{
+  display:flex;
+  height:100%;
+  transition:transform .45s cubic-bezier(.22,.61,.36,1);
+}
+
+/* ===== CARD ===== */
+
+.slide{
+  min-width:100%;
+  padding:4px;
+}
+
+.section-table-card{
+  height:100%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:auto;
+  box-shadow:var(--shadow);
+}
+
+.section-head{
+  background:#eaf3ff;
+  padding:10px 14px;
+  font-weight:800;
+  color:#133a67;
+  letter-spacing:.05em;
+}
+
+.section-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+.section-table th,
+.section-table td{
+  border:1px solid var(--line);
+  padding:8px 12px;
+  font-size:15px;
+}
+
+.section-table thead th{
+  background:#eaf3ff;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.section-table td.num{text-align:right}
+
+.section-table th:nth-child(1),
+.section-table td:nth-child(1){
+  width:30%;
+}
+
+.section-table th:not(:first-child),
+.section-table td:not(:first-child){
+  width: calc(70% / 6);
+}
+
+.completed-product-row td{
+  background:#28A745;
+  color:#fff;
+}
+
+.empty{
+  padding:40px;
+  text-align:center;
+  color:var(--muted);
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+  <header class="hero">
+    <h1 class="hero-title">
+      Master
+    </h1>
+
+    <div class="controls">
+      <button id="prevBtn" class="nav-btn">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <select id="jumpSelect" class="jump-select"></select>
+
+      <button id="nextBtn" class="nav-btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </header>
+
+  <section class="viewer">
+    <div id="slider" class="slider"></div>
+  </section>
+
+</main>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycby0t1hNhPtflVTcqay2cooBSRawRDt6mgWPyMYisfS8TmqUo47U6nlDhVXhGlJ6g092HA/exec";
+let totalSlides = 0;
+let isAnimating = false;
+
+const slider=document.getElementById("slider");
+const prevBtn=document.getElementById("prevBtn");
+const nextBtn=document.getElementById("nextBtn");
+const jumpSelect=document.getElementById("jumpSelect");
+
+let sectionKeys=[];
+let currentIndex=0;
+
+/* ===== helpers ===== */
+
+function normalizeKey(v){
+  return String(v??"").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
+
+function getVal(row,aliases){
+  const keys=aliases.map(normalizeKey);
+  const found=Object.keys(row).find(k=>keys.includes(normalizeKey(k)));
+  return found?row[found]:"";
+}
+
+const getSection=r=>String(getVal(r,["section"])).trim();
+const getProduct=r=>String(getVal(r,["product"])).trim();
+const getPacked=r=>getVal(r,["packed"]);
+const getTray=r=>getVal(r,["tray"]);
+const getTotal=r=>getVal(r,["total"]);
+const getPackedStatus=r=>getVal(r,["packedStatus"]);
+const getTrayStatus=r=>getVal(r,["trayStatus"]);
+const getTime = (r) => {
+  const raw = getVal(r, ["time","timestamp"]);
+  if (!raw) return "";
+
+  const d = new Date(raw);
+  if (isNaN(d)) return String(raw);
+
+  const hours = String(d.getHours()).padStart(2,"0");
+  const minutes = String(d.getMinutes()).padStart(2,"0");
+
+  return `${hours}:${minutes}`;
+};
+
+const isCompleted=v=>{
+  const s=String(v||"").toLowerCase();
+  return s==="done"||s==="complete"||s==="completed";
+};
+
+/* ===== grouping ===== */
+
+function groupRows(rows){
+  const map=new Map();
+  rows.forEach(r=>{
+    const sec=getSection(r);
+    if(!sec) return;
+    if(!map.has(sec)) map.set(sec,[]);
+    map.get(sec).push(r);
+  });
+  return map;
+}
+
+/* ===== table ===== */
+
+function buildTable(rows){
+  return `
+  <table class="section-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th class="num">Packed</th>
+        <th class="num">Tray</th>
+        <th class="num">Total</th>
+        <th>Packed Status</th>
+        <th>Tray Status</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows.map(r=>{
+        const packedDone = isCompleted(getPackedStatus(r));
+        const trayDone   = isCompleted(getTrayStatus(r));
+        const done = packedDone && trayDone;
+        return `
+        <tr class="${done?"completed-product-row":""}">
+          <td>${getProduct(r)||"-"}</td>
+          <td class="num">${getPacked(r)||"-"}</td>
+          <td class="num">${getTray(r)||"-"}</td>
+          <td class="num">${getTotal(r)||"-"}</td>
+          <td>${getPackedStatus(r)||"-"}</td>
+          <td>${getTrayStatus(r)||"-"}</td>
+          <td>${getTime(r)||"-"}</td>
+        </tr>`;
+      }).join("")}
+    </tbody>
+  </table>`;
+}
+
+/* ===== render ===== */
+
+function updatePosition(animate=true){
+  slider.style.transition = animate
+    ? "transform .45s cubic-bezier(.22,.61,.36,1)"
+    : "none";
+
+  slider.style.transform = `translateX(-${currentIndex*100}%)`;
+}
+
+function handleLoopEdges(){
+  if (currentIndex === 0) {
+    slider.style.transition = "none";
+    currentIndex = totalSlides;
+    slider.style.transform = `translateX(-${currentIndex*100}%)`;
+  }
+
+  if (currentIndex === totalSlides + 1) {
+    slider.style.transition = "none";
+    currentIndex = 1;
+    slider.style.transform = `translateX(-${currentIndex*100}%)`;
+  }
+
+  jumpSelect.value = currentIndex;
+}
+
+function render(rows){
+  if(!rows.length){
+    slider.innerHTML = '<div class="empty">No data</div>';
+    sectionKeys = [];
+    return;
+  }
+
+  const sectionMap = groupRows(rows);
+  const entries = [...sectionMap.entries()];
+  sectionKeys = entries.map(e => e[0]);
+
+  if(!sectionKeys.length){
+    slider.innerHTML = '<div class="empty">No data</div>';
+    return;
+  }
+
+  /* 🔥 create loop clones */
+  const firstClone = entries[0];
+  const lastClone  = entries[entries.length - 1];
+
+  const slidesHtml = [
+    lastClone,
+    ...entries,
+    firstClone
+  ].map(([sec, items]) => `
+    <div class="slide">
+      <article class="section-table-card">
+        <div class="section-head">${sec.toUpperCase()}</div>
+        ${buildTable(items)}
+      </article>
+    </div>
+  `).join("");
+
+  slider.innerHTML = slidesHtml;
+
+  /* important state */
+  totalSlides = sectionKeys.length;
+  currentIndex = 1; // start on real first slide
+
+  updatePosition(false);
+
+  /* dropdown sync */
+  jumpSelect.innerHTML = sectionKeys
+    .map((s,i)=>`<option value="${i+1}">${s}</option>`)
+    .join("");
+
+  jumpSelect.value = currentIndex;
+}
+
+/* ===== navigation ===== */
+
+function goTo(index){
+  if (isAnimating) return;
+
+  isAnimating = true;
+  currentIndex = index;
+  updatePosition(true);
+
+  setTimeout(() => {
+    handleLoopEdges();
+    isAnimating = false;
+  }, 460);
+}
+
+prevBtn.onclick = () => goTo(currentIndex - 1);
+nextBtn.onclick = () => goTo(currentIndex + 1);
+jumpSelect.onchange = e => goTo(Number(e.target.value));
+
+/* ===== load ===== */
+
+async function load(){
+  try{
+    const res=await fetch(API_URL);
+    const json=await res.json();
+    render(json?.data||[]);
+  }catch{
+    slider.innerHTML='<div class="empty">Load failed</div>';
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
