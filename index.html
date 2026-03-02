@@ -109,7 +109,9 @@ body{
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:18px;
-  overflow:auto;
+    overflow-x:auto;
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow:var(--shadow);
 }
 
@@ -131,7 +133,10 @@ body{
   border:1px solid var(--line);
   padding:8px 12px;
   font-size:15px;
-  max-width:0;
+  border:1px solid var(--line);
+  padding:8px 12px;
+  font-size:15px;
+  white-space:nowrap;
   overflow:hidden;
 }
 
@@ -191,6 +196,25 @@ body{
   text-align:center;
   color:var(--muted);
   font-weight:700;
+}
+
+@media (max-width:768px){
+
+  .section-table{
+    min-width:720px;
+  }
+
+}
+@media (max-width:768px){
+
+  .section-table thead th{
+    font-size:13px;
+    letter-spacing:.3px;
+  }
+
+}
+.section-summary-row td{
+  white-space:nowrap;
 }
 </style>
 </head>
