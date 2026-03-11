@@ -554,6 +554,103 @@
     .pulsing {
       animation: silentPulse 0.7s ease-in-out;
     }
+
+    /* ════════════════════════════════════════
+       SKS DASHBOARD CUSTOM KPI CARDS
+    ════════════════════════════════════════ */
+    .dashboard-top { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .row-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+    .dark-card { flex: 1 1 30%; background: #ffffff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; color: #123a67; text-align: center; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 12px rgba(22, 56, 94, .08); transition: transform 0.2s, box-shadow 0.2s; }
+    .dark-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22, 56, 94, .12); }
+    .dark-card.left-align { text-align: left; }
+    @media (max-width: 768px) { .row-cards { gap: 6px; } .dark-card { padding: 10px 6px; flex: 1 1 30%; min-width: 0; border-radius: 8px; } .dark-card-title { font-size: 10px !important; margin-bottom: 4px !important; } .dark-card-value { font-size: 16px !important; margin-bottom: 4px !important; } .dark-card-sub, .dark-card-metric { font-size: 10px !important; margin-bottom: 4px !important; } .dark-card-metric span.label { font-size: 9px !important; } }
+    .dark-card-title { font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .dark-card-value { font-size: 32px; font-weight: 900; margin-bottom: 8px; color: var(--accent); line-height: 1; }
+    .dark-card-sub { font-size: 14px; font-weight: 700; color: #314d6b; }
+    .dark-card-metric { font-size: 14px; margin-bottom: 8px; font-weight: 600; color: #314d6b; }
+    .dark-card-metric span.label { color: var(--muted); text-transform: uppercase; font-size: 12px; font-weight: 800; margin-right: 4px; }
+    .dark-card-metric span.ach-green { color: #22c55e; font-weight: 700; background: transparent; padding: 0; }
+    .dark-card-metric span.ach-yellow { color: #eab308; font-weight: 700; background: transparent; padding: 0; }
+    .dark-card-metric span.ach-red { color: #ef4444; font-weight: 700; background: transparent; padding: 0; }
+    .ach-green { color: #16a34a; font-weight: 900; background: #f0fdf4; padding: 4px 8px; border-radius: 8px; }
+    .ach-yellow { color: #ca8a04; font-weight: 900; background: #fefce8; padding: 4px 8px; border-radius: 8px; }
+    .ach-red { color: #dc2626; font-weight: 900; background: #fff1f2; padding: 4px 8px; border-radius: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(30,111,217,0.3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle; }
+
+    /* ── SKS Dashboard: Panel & Table (exact sks.html styles) ── */
+    .sks-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 15px;
+    }
+    .sks-section-title {
+      margin: 0 0 16px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #123a67;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sks-table-responsive {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .sks-table-responsive table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .sks-table-responsive th {
+      background: #f8fbff;
+      color: #123a67;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 14px 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid var(--line);
+    }
+    .sks-table-responsive td {
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--line);
+      color: #314d6b;
+    }
+    .sks-table-responsive tr:last-child td { border-bottom: none; }
+    .sks-table-responsive tr:hover td { background: #f2f8ff; }
+    .sks-text-center { text-align: center; }
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      display: inline-block;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .status-running { background: var(--card-done-bg); color: var(--card-done-text); border: 1px solid var(--card-done-border); }
+    .status-slow    { background: var(--card-warn-bg); color: var(--card-warn-text); border: 1px solid var(--card-warn-border); }
+    .status-stopped { background: var(--card-late-bg); color: var(--card-late-text); border: 1px solid var(--card-late-border); }
+    .status-default { background: var(--card-idle-bg); color: var(--card-idle-text); border: 1px solid var(--card-idle-border); }
+
+    /* Smooth refresh transition (tv.html pattern) */
+    .sks-panel, .dark-card {
+      transition: opacity 260ms ease, transform 260ms ease;
+    }
+    #panelDashboard.is-refreshing .sks-panel,
+    #panelDashboard.is-refreshing .dark-card {
+      opacity: 0.55;
+      transform: translateY(2px);
+    }
   </style>
 </head>
 
@@ -581,12 +678,30 @@
 
     <!-- ── TAB BAR ── -->
     <div class="tab-bar">
-      <button class="tab-btn active" id="tabMaster" onclick="switchTab('master')">
+      <button class="tab-btn active" id="tabDashboard" onclick="switchTab('dashboard')">
+        Dashboard
+      </button>
+      <button class="tab-btn" id="tabMaster" onclick="switchTab('master')">
         Master
       </button>
       <button class="tab-btn" id="tabCutting" onclick="switchTab('cutting')">
         Cutting
       </button>
+    </div>
+
+    <!-- ══════════════════════════════════
+       DASHBOARD TAB PANEL (from SKS)
+  ══════════════════════════════════ -->
+    <div class="tab-panel active" id="panelDashboard">
+      <section class="viewer" id="dashboardViewer" style="padding: 10px;">
+        <div class="dashboard-top" id="dashboardTop">
+          <div class="row-cards" id="row1"></div>
+          <div class="row-cards" id="row2"></div>
+        </div>
+        <div id="departmentsContainer">
+          <div style="padding: 40px; text-align: center; color: var(--muted); font-weight: 700;">Loading...</div>
+        </div>
+      </section>
     </div>
 
     <!-- ══════════════════════════════════
@@ -608,6 +723,279 @@
     </div>
 
   </main>
+
+  <!-- ════════════════════════════════════
+     DASHBOARD TAB SCRIPT  (view-only layer)
+════════════════════════════════════ -->
+  <script>
+    const SKS_URL = "https://script.google.com/macros/s/AKfycbwFDnwhS3KrW48EHvE03JBxKnUjUe3eYwt7V8EtymXRzsBgSd440QjzzW8cyRkQl9vkYg/exec";
+    
+    const SKS_COLUMNS = [
+      { key: "SECTION", label: "Section" },
+      { key: "INCHARGE", label: "Incharge" },
+      { key: "STAFF", label: "Staff" },
+      { key: "STATUS", label: "Status" },
+      { key: "IDEAL START", label: "Ideal Start", type: 'time' },
+      { key: "ACTUAL START", label: "Actual Start", type: 'time' },
+      { key: "COMPLETED AT", label: "Completed At", type: 'time' },
+      { key: "DURATION", label: "Duration", type: 'duration' },
+      { key: "TARGET", label: "Target" },
+      { key: "OUTPUT", label: "Output" },
+      { key: "SPEED", label: "Speed" },
+      { key: "ACHIEVEMENT", label: "Ach%", type: 'ach' }
+    ];
+
+    function sksFormatTime(val) {
+      if (!val) return "-";
+      try {
+        const d = new Date(val);
+        if (isNaN(d.getTime())) return val;
+        return d.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true });
+      } catch (e) { return val; }
+    }
+
+    function sksFormatDuration(val) {
+      if (!val) return "-";
+      try {
+        const d = new Date(val);
+        if (isNaN(d.getTime())) return val;
+        const istTimeStr = d.toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour12: false });
+        const parts = istTimeStr.split(":");
+        if (parts.length >= 2) {
+            const h = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10);
+            return h + "h " + m + "m";
+        }
+        return istTimeStr;
+      } catch (e) { return val; }
+    }
+
+    function sksGetStatusClass(status) {
+      const s = String(status || '').toLowerCase();
+      if (s === "running") return "status-running";
+      if (s === "slow") return "status-slow";
+      if (s === "stopped" || s === "stop") return "status-stopped";
+      return "status-default";
+    }
+
+    function sksGetAchClass(ach) {
+      const num = parseFloat(ach);
+      if (isNaN(num)) return "";
+      if (num >= 100) return "ach-green";
+      if (num >= 80) return "ach-yellow";
+      return "ach-red";
+    }
+
+    function sksExtractNumber(str) {
+      if (typeof str === 'number') return str;
+      if (typeof str !== 'string') return 0;
+      const match = str.match(/[\d.]+/);
+      return match ? parseFloat(match[0]) : 0;
+    }
+
+    function sksEscapeHtml(v) {
+      return String(v == null ? "" : v)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function renderSksDashboard(data) {
+      const row1 = document.getElementById("row1");
+      const row2 = document.getElementById("row2");
+      const deptContainer = document.getElementById("departmentsContainer");
+      
+      row1.innerHTML = "";
+      row2.innerHTML = "";
+      deptContainer.innerHTML = "";
+
+      const departments = Object.keys(data);
+      if (departments.length === 0) {
+        deptContainer.innerHTML = "<div class='empty'>No data available.</div>";
+        return;
+      }
+
+      const orderedDepts = ["Production Department", "Cutting Department", "Packing Department"];
+      const displayDepts = orderedDepts.filter(d => departments.includes(d));
+      const iterationList = displayDepts.length > 0 ? displayDepts : departments;
+
+      iterationList.forEach(deptName => {
+        const deptData = data[deptName] || [];
+        
+        let deptTarget = 0;
+        let deptOutput = 0;
+        let unit = "";
+        let avgSpeed = 0;
+        let speedUnit = "";
+        
+        deptData.forEach(row => {
+          deptTarget += sksExtractNumber(row.TARGET);
+          deptOutput += sksExtractNumber(row.OUTPUT);
+          
+          if(!unit && typeof row.OUTPUT === 'string') {
+              const uMatch = row.OUTPUT.match(/[a-zA-Z]+/g);
+              if(uMatch) unit = uMatch[uMatch.length - 1];
+          }
+
+          if (row.SPEED && row.SPEED !== "-") {
+            avgSpeed = parseFloat(row.SPEED);
+            if(typeof row.SPEED === 'string') {
+              const sMatch = row.SPEED.match(/[a-zA-Z\/]+/g);
+              if (sMatch) speedUnit = sMatch[sMatch.length - 1];
+            }
+          }
+        });
+        
+        if (!speedUnit) {
+          if (unit.toLowerCase().includes("pc")) speedUnit = "pcs/min";
+          else if (unit.toLowerCase().includes("kg")) speedUnit = "kg/hr";
+        }
+
+        const ach = deptTarget > 0 ? Math.round((deptOutput / deptTarget) * 100) : 0;
+        let shortName = sksEscapeHtml(deptName).replace(" Department", "");
+
+        const topCard = document.createElement("div");
+        topCard.className = "dark-card";
+        topCard.innerHTML = `
+          <div class="dark-card-title">${shortName} Today</div>
+          <div class="dark-card-value">${deptOutput} ${unit}</div>
+          <div class="dark-card-sub">Avg ${avgSpeed || '-'} ${speedUnit}</div>
+        `;
+        row1.appendChild(topCard);
+
+        const scoreCard = document.createElement("div");
+        scoreCard.className = "dark-card left-align";
+        scoreCard.innerHTML = `
+          <div class="dark-card-title" style="font-size: 16px; margin-bottom: 12px;">${shortName} Dept Score</div>
+          <div class="dark-card-metric"><span class="label">Output :</span> ${deptOutput} ${unit}</div>
+          <div class="dark-card-metric"><span class="label">Target :</span> ${deptTarget} ${unit}</div>
+          <div class="dark-card-metric" style="margin-top: 2px;"><span class="label">Efficiency :</span> <span class="${sksGetAchClass(ach)}">${ach}%</span></div>
+        `;
+        row2.appendChild(scoreCard);
+
+        const panel = document.createElement("div");
+        panel.className = "sks-panel";
+
+        const title = document.createElement("h2");
+        title.className = "sks-section-title";
+        title.innerHTML = `${sksEscapeHtml(deptName)}`;
+        panel.appendChild(title);
+
+        const tableResp = document.createElement("div");
+        tableResp.className = "sks-table-responsive";
+        
+        const table = document.createElement("table");
+        
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        SKS_COLUMNS.forEach(col => {
+          const th = document.createElement("th");
+          th.textContent = col.label;
+          if(col.key === "STATUS" || col.type === 'ach') th.className = "sks-text-center";
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        deptData.forEach(row => {
+            const tr = document.createElement("tr");
+            
+            const isPacking = deptName.toLowerCase().includes("packing");
+            const unitStr = isPacking ? " pcs" : " KG";
+            const speedUnitStr = isPacking ? " pcs/min" : " kg/hr";
+            
+            SKS_COLUMNS.forEach(col => {
+              const td = document.createElement("td");
+              let val = row[col.key] !== undefined ? row[col.key] : "";
+              
+              if (col.type === 'time') {
+                val = sksFormatTime(val);
+              } else if (col.type === 'duration') {
+                val = sksFormatDuration(val);
+              } else if (col.type === 'ach') {
+                td.className = "sks-text-center " + sksGetAchClass(val);
+                val = val !== "-" ? Math.round(val) + "%" : "-";
+              }
+              
+              if (col.key === "STATUS") {
+                td.className = "sks-text-center";
+                const badge = document.createElement("span");
+                badge.className = "status-badge " + sksGetStatusClass(val);
+                badge.textContent = val;
+                
+                td.appendChild(badge);
+              } else {
+                if (col.type !== 'ach') {
+                    if (val !== "" && val !== "-") {
+                        if (col.key === "TARGET" || col.key === "OUTPUT") {
+                            val = val + unitStr;
+                        } else if (col.key === "SPEED") {
+                            val = val + speedUnitStr;
+                        }
+                    }
+                    td.textContent = val;
+                }
+                else td.textContent = val; 
+              }
+              
+              tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+          });
+
+        table.appendChild(tbody);
+        tableResp.appendChild(table);
+        panel.appendChild(tableResp);
+        
+        deptContainer.appendChild(panel);
+      });
+    }
+
+    let sksFingerprint = "";
+    let sksRefreshInFlight = false;
+
+    function createSksFingerprint(data) {
+      if (!data || typeof data !== 'object') return "";
+      const sorted = {};
+      Object.keys(data).sort().forEach(k => {
+        sorted[k] = JSON.stringify(data[k]);
+      });
+      return JSON.stringify(sorted);
+    }
+
+    async function loadSksData(silent) {
+      if (sksRefreshInFlight) return;
+      sksRefreshInFlight = true;
+      const deptContainer = document.getElementById("departmentsContainer");
+      const panel = document.getElementById("panelDashboard");
+
+      if (!silent && deptContainer.innerHTML.includes("Loading...")) {
+        // keep initial loading text
+      }
+
+      try {
+        const res = await fetch(SKS_URL);
+        const data = await res.json();
+        const fp = createSksFingerprint(data);
+
+        if (fp !== sksFingerprint) {
+          sksFingerprint = fp;
+          // Animate: briefly dim, then render, then restore
+          panel.classList.add("is-refreshing");
+          await new Promise(r => setTimeout(r, 280));
+          renderSksDashboard(data);
+          panel.classList.remove("is-refreshing");
+        }
+      } catch (e) {
+        console.error("SKS Fetch Error:", e);
+        if (!silent) {
+          deptContainer.innerHTML = "<div class='empty' style='color:#b42318;'>Failed to load Dashboard data.</div>";
+        }
+      } finally {
+        sksRefreshInFlight = false;
+      }
+    }
+  </script>
 
   <!-- ════════════════════════════════════
      MASTER TAB SCRIPT  (original — untouched)
@@ -1051,20 +1439,48 @@
 ════════════════════════════════════ -->
   <script>
     let masterLoaded = false;
+    let sksLoaded = false;
 
     function switchTab(tab) {
+      document.getElementById("tabDashboard").classList.toggle("active", tab === "dashboard");
       document.getElementById("tabMaster").classList.toggle("active", tab === "master");
       document.getElementById("tabCutting").classList.toggle("active", tab === "cutting");
+      
+      document.getElementById("panelDashboard").classList.toggle("active", tab === "dashboard");
       document.getElementById("panelMaster").classList.toggle("active", tab === "master");
       document.getElementById("panelCutting").classList.toggle("active", tab === "cutting");
+      
       document.getElementById("masterControls").style.display = tab === "master" ? "flex" : "none";
       document.getElementById("cutStatusWrap").style.display = tab === "cutting" ? "flex" : "none";
-      if (tab === "cutting" && cutRows.length === 0) loadCutting(false);
+      
+      if (tab === "dashboard") {
+          document.getElementById("heroTitle").textContent = "SKS Factory";
+          if (!sksLoaded) {
+              loadSksData();
+              sksLoaded = true;
+          }
+      } else if (tab === "master") {
+          document.getElementById("heroTitle").textContent = "Admin - Master";
+          if (!masterLoaded) {
+              loadMaster();
+              masterLoaded = true;
+          }
+      } else if (tab === "cutting") {
+          document.getElementById("heroTitle").textContent = "Admin - Cutting";
+          if (cutRows.length === 0) loadCutting(false);
+      }
     }
 
     // Boot
-    loadMaster();
+    switchTab('dashboard');
     scheduleCutRefresh();
+
+    // Auto-refresh active tab every 10 seconds (smooth / tv.html pattern)
+    setInterval(() => {
+      const dashActive = document.getElementById("panelDashboard").classList.contains("active");
+
+      if (dashActive)  loadSksData(true);
+    }, 10000);
   </script>
 
 </body>
